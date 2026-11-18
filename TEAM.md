@@ -114,12 +114,16 @@ Vận hành và pháp lý; mục tiêu góc nhìn các bên, telemetry productio
 
 ### Đóng góp cụ thể
 
-...
+- **CP1 & CP2:** Soạn thảo mục tiêu theo góc nhìn các bên (khách hàng, tài xế, tài chính) tại câu 1.2 Phiếu A; thiết kế Production Telemetry cho bước `file_carrier_fault` (A2) với chỉ số `carrier_dispute_rate` và cơ chế cảnh báo.
+- **CP3:** Thực hiện phân tích HAZOP vòng 1 cho 3 công cụ chính (`issue_refund`, `file_carrier_fault`, `notify_carrier`) tại mục B4 Phiếu B; hoàn thiện bảng Checklist go-live 9 nhóm việc (B5); soạn thảo quy trình vận hành và Runbook phần 1–3 cùng kịch bản ứng phó giờ cao điểm (B7.5, B7.6); cấu hình cổng vận hành và pháp lý (`operations`, `legal`) trong `config/operating_gates.json`.
+- **CP4 & CP5:** Phân tích HAZOP thẻ S7 tại C4; cập nhật checklist và viết Runbook phần 4–5 (C11) về phương án xử lý sự cố rò rỉ dữ liệu cá nhân sang bên thứ ba.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `2efc08c` (Phiếu B: HAZOP B4, checklist B5, pre-mortem B6, runbook B7.5-B7.6; config operations, legal).
+- File & mục trong phiếu: `templates/form-a-criteria.md` (mục A1.2, A2), `templates/form-b-evaluation-gates.md` (mục B4, B5, B7.5, B7.6), `config/operating_gates.json` (mục `operations`, `legal`).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** Các rủi ro pháp lý và tranh chấp đối tác (như phạt oan hãng vận chuyển hay rò rỉ PII) luôn cần các điều kiện dừng tự động rõ ràng (stop conditions) và quy trình runbook chặt chẽ từ tín hiệu cảnh báo đến người bấm nút dừng tối đa 15 phút.
+- **Một điều còn chưa chắc:** Việc phân bổ hạn mức chi phí bồi thường và năng lực duyệt tay 6 ca/giờ có thể chịu áp lực lớn khi lưu lượng ticket tăng đột biến trong các đợt bão lũ kéo dài.
