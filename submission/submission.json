@@ -1,12 +1,12 @@
 {
-  "team": "",
+  "team": "K5-L3A-DAY10-EHEHE-PoCtoPilotGate1",
   "members": [],
-  "incident": "",
+  "incident": "S7",
   "decision_v1": "",
   "decision_v2": "",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: Việc khách đặt quà cung cấp thông tin người nhận hoặc thông tin đó đã nằm trong DB không có nghĩa người nhận đồng ý để hãng dùng nó xử lý khiếu nại; `S7-20@11` cho thấy ticket không chứa PII vẫn tạo `recipient_contact` từ DB, nên quyền chia sẻ và giới hạn mục đích phải được xác minh riêng trước pilot.",
+    "reduce_or_prevent": "Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: Với code/config hiện được kiểm bằng `S7-01@11` và `S7-20@11` ở mốc `after`, cổng hoàn tiền và cổng trách nhiệm hãng chưa NGĂN rò rỉ ở kênh `notify_carrier`: cả hai ca hoàn đúng 25.000đ nhưng vẫn có `no_pii_to_carrier = False`. Chỉ che SĐT theo mẫu hoặc xóa trường `phone` cấp ngoài cùng chỉ GIẢM khả năng vì PII còn trong `customer_note` và dict `recipient_contact`. Thiết kế xây mới payload theo đúng bốn trường và giá trị có cấu trúc ở C5 có thể NGĂN hai đường rò này trong phạm vi kênh đã kiểm soát; không tuyên bố bảo đảm cho kênh khác, dữ liệu nguồn sai hoặc cho bản code chưa được kiểm chứng.",
+    "measure_in_pilot": "Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: Trong tuần đầu pilot có giám sát, đo theo từng ngày và từng kho tổng chi phí xử lý/ticket (tiền máy thực trả, thời gian duyệt/kiểm lại và phí nhân sự phân bổ), ROI có tính tiền hoàn sai, tỉ lệ chuyển người và lượng ca cần duyệt trong giờ cao điểm; đối soát toàn bộ khoản hoàn và lỗi hãng với sổ kế toán/tracking, ghi nhận phản hồi của khách, hãng và người duyệt. So với các ngưỡng đã ký: chi phí <= 5.000đ/ticket, ROI >= 0,20, ca ùn = 0, hoàn sai/lỗi hãng oan/lộ dữ liệu = 0; kiểm thêm hạn chờ 60 phút, mức độ đầy đủ và độ trễ đồng bộ của tracking, chính sách, phê duyệt và sổ cái. Kiểm kê dữ liệu thực gửi đối tác, đo độ trễ xử lý đầu-cuối và độ chính xác qua kiểm duyệt độc lập; không suy từ MockLLM rằng chất lượng và tốc độ thật đã đạt. Nếu có tín hiệu vượt trần, xử lý ngay theo runbook thay vì đợi hết tuần."
   }
 }

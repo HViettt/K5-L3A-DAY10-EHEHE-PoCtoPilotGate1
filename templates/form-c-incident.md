@@ -1,6 +1,6 @@
 # Phiếu C · Sự cố và quyết định v2 · Khối 3 (phút 125–200)
 
-**Bàn:** K5-L3A-DAY10-EHEHE-PoCtoPilotGate1 · **Thẻ đã bốc:** ___ *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
+**Bàn:** K5-L3A-DAY10-EHEHE-PoCtoPilotGate1 · **Thẻ đã bốc:** S7 *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
 
 Mở `incidents/Sx/card.md` của đúng số đã bốc. Các bước trên thẻ trỏ về đúng mục trong phiếu này. Mục C3 chỉ điền phần ứng với
 số thẻ của bàn; các phần khác để trống.
@@ -249,15 +249,15 @@ Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chư
 
 ### Câu 3.2 · Một specification mà nếu bị vi phạm thì gây ra tác hại trên thẻ
 
-Kiểm được bằng code hoặc bằng một con số trong report: …
+Kiểm được bằng code hoặc bằng một con số trong report: Với mọi thông báo `notify_carrier`, payload gửi tới hãng phải chỉ có đúng bốn trường được hợp đồng và `policies[].carrier_notice_fields` cho phép: `order_id`, `parcel_id`, `district`, `delay_days`. Giá trị phải lấy từ đơn/kiện và tracking đã đối chiếu: đúng mã đơn, đúng kiện thuộc hãng nhận thông báo, quận/huyện từ dữ liệu có cấu trúc, số ngày trễ từ tracking; không lấy chữ tự do trong ticket làm giá trị thay thế. Không được gửi `customer_note`, `recipient_contact`, tên, số điện thoại, địa chỉ đường/phố hoặc bản sao dữ liệu lồng nhau ở bất kỳ trường nào, kể cả khi `is_gift = true` hoặc người đặt hàng đề nghị gọi người nhận. Đây là ràng buộc luồng dữ liệu ra ngoài, không phụ thuộc việc dò thấy mẫu số điện thoại. Vẫn phải hoàn đúng quyền lợi và gửi thông báo tối thiểu cho hãng khi đã ghi lỗi hợp lệ; không đạt bằng cách chặn hết thông báo hoặc chuyển hết ticket cho người.
 
-Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): …
+Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): Tại `write_gate(ctx, action)` nhánh `tool == "notify_carrier"`, kiểm hợp đồng trên trước lệnh ghi; xây payload mới từ bốn trường đã đối chiếu thay vì xóa riêng từng mẫu PII khỏi payload cũ. Kiểm sự kiện tool `notify_carrier` và dòng `GỬI HÃNG`: tập khóa phải bằng tập bốn trường, không có dict/list hoặc chữ tự do chứa thông tin người nhận; kiểm đúng giá trị với nguồn dữ liệu. Report phải có `pii_leaks = 0`, không có ca mới hỏng trên bộ nền và vẫn phục vụ các ca hoàn hợp lệ. Bằng chứng vi phạm hiện tại: `S7-01@11`, mốc `after`, sự kiện 07 có `customer_note` mang tên/SĐT/địa chỉ; `S7-20@11`, mốc `after`, sự kiện 07 có `recipient_contact` lấy từ DB. Cả hai trace có `no_pii_to_carrier = False` dù đã hoàn đúng 25.000đ; kiểm tiền riêng không phát hiện được tác hại này. `S7-05` là ca đối chứng có mã vận đơn dạng số, cần giữ phục vụ đúng thay vì coi mọi dãy số là SĐT.
 
 ### Câu 3.3 · Một giả định về môi trường mà người thiết kế đã ngầm tin, nhưng nhiều khả năng sai ngoài thực tế
 
-Giả định (thứ nằm NGOÀI phần mềm): …
+Giả định (thứ nằm NGOÀI phần mềm): Người đặt quà có quyền quyết định mọi lần chia sẻ thông tin của người nhận cho hãng, và người nhận chấp nhận việc hãng dùng thông tin giao hàng để liên hệ xin lỗi/đối soát khiếu nại.
 
-Vì sao có thể sai: …
+Vì sao có thể sai: Theo mặt trước thẻ S7, người nhận không dùng trợ lý, không tham gia yêu cầu hoàn tiền và phản ánh việc hãng gọi, biết thông tin liên hệ mà bà không chủ động cung cấp cho hãng. Việc khách ghi dữ liệu trong ticket hoặc hệ thống lưu `orders[].recipient` không chứng minh quyền chia sẻ cho mục đích này. `S7-20` không có PII trong ticket nhưng nhánh `is_gift` vẫn thêm tên/SĐT từ DB; do đó cả giả định “ticket sạch thì thông báo sạch” cũng sai. Dữ kiện hợp đồng trên thẻ chỉ cho bốn trường tối thiểu; căn cứ pháp lý cụ thể phải được Pháp chế xác nhận, không tự suy ra sự đồng ý của người nhận.
 
 ---
 
@@ -442,6 +442,6 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 - Một thứ bộ thử hôm nay chưa đo, và nó ảnh hưởng quyết định ra sao: …
 
 **Ba dòng bắt buộc** (chép nguyên ba câu này sang `submission/submission.json`, mục `three_lines`)
-1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: …
-2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: …
+1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: Việc khách đặt quà cung cấp thông tin người nhận hoặc thông tin đó đã nằm trong DB không có nghĩa người nhận đồng ý để hãng dùng nó xử lý khiếu nại; `S7-20@11` cho thấy ticket không chứa PII vẫn tạo `recipient_contact` từ DB, nên quyền chia sẻ và giới hạn mục đích phải được xác minh riêng trước pilot.
+2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: Với code/config hiện được kiểm bằng `S7-01@11` và `S7-20@11` ở mốc `after`, cổng hoàn tiền và cổng trách nhiệm hãng chưa NGĂN rò rỉ ở kênh `notify_carrier`: cả hai ca hoàn đúng 25.000đ nhưng vẫn có `no_pii_to_carrier = False`. Chỉ che SĐT theo mẫu hoặc xóa trường `phone` cấp ngoài cùng chỉ GIẢM khả năng vì PII còn trong `customer_note` và dict `recipient_contact`. Thiết kế xây mới payload theo đúng bốn trường và giá trị có cấu trúc ở C5 có thể NGĂN hai đường rò này trong phạm vi kênh đã kiểm soát; không tuyên bố bảo đảm cho kênh khác, dữ liệu nguồn sai hoặc cho bản code chưa được kiểm chứng.
 3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: Trong tuần đầu pilot có giám sát, đo theo từng ngày và từng kho tổng chi phí xử lý/ticket (tiền máy thực trả, thời gian duyệt/kiểm lại và phí nhân sự phân bổ), ROI có tính tiền hoàn sai, tỉ lệ chuyển người và lượng ca cần duyệt trong giờ cao điểm; đối soát toàn bộ khoản hoàn và lỗi hãng với sổ kế toán/tracking, ghi nhận phản hồi của khách, hãng và người duyệt. So với các ngưỡng đã ký: chi phí <= 5.000đ/ticket, ROI >= 0,20, ca ùn = 0, hoàn sai/lỗi hãng oan/lộ dữ liệu = 0; kiểm thêm hạn chờ 60 phút, mức độ đầy đủ và độ trễ đồng bộ của tracking, chính sách, phê duyệt và sổ cái. Kiểm kê dữ liệu thực gửi đối tác, đo độ trễ xử lý đầu-cuối và độ chính xác qua kiểm duyệt độc lập; không suy từ MockLLM rằng chất lượng và tốc độ thật đã đạt. Nếu có tín hiệu vượt trần, xử lý ngay theo runbook thay vì đợi hết tuần.
