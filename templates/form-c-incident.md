@@ -1,6 +1,6 @@
 # Phiếu C · Sự cố và quyết định v2 · Khối 3 (phút 125–200)
 
-**Bàn:** ______ · **Thẻ đã bốc:** ___ *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
+**Bàn:** K5-L3A-DAY10-EHEHE-PoCtoPilotGate1 · **Thẻ đã bốc:** ___ *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
 
 Mở `incidents/Sx/card.md` của đúng số đã bốc. Các bước trên thẻ trỏ về đúng mục trong phiếu này. Mục C3 chỉ điền phần ứng với
 số thẻ của bàn; các phần khác để trống.
@@ -418,7 +418,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 | | **v2** (phút 185–200, SAU sự cố) |
 |---|---|
-| Commit ký tiêu chí | phải giống v1 |
+| Commit ký tiêu chí | `ac142e5` — `Sign acceptance criteria`; tiêu chí hash `fc643207ba4b8717c6f6b80c5f5574ca7e148e42740dbcbf10dc22fbaeeb22b6`, giống v1. |
 | Hash chốt cổng vòng 1 | phải giống v1 |
 | Mã lần chạy dùng làm bằng chứng | thẻ, mốc base: ________ · prepared: ________ · after: ________ |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
@@ -444,4 +444,4 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 **Ba dòng bắt buộc** (chép nguyên ba câu này sang `submission/submission.json`, mục `three_lines`)
 1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: …
 2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: …
-3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: …
+3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: Trong tuần đầu pilot có giám sát, đo theo từng ngày và từng kho tổng chi phí xử lý/ticket (tiền máy thực trả, thời gian duyệt/kiểm lại và phí nhân sự phân bổ), ROI có tính tiền hoàn sai, tỉ lệ chuyển người và lượng ca cần duyệt trong giờ cao điểm; đối soát toàn bộ khoản hoàn và lỗi hãng với sổ kế toán/tracking, ghi nhận phản hồi của khách, hãng và người duyệt. So với các ngưỡng đã ký: chi phí <= 5.000đ/ticket, ROI >= 0,20, ca ùn = 0, hoàn sai/lỗi hãng oan/lộ dữ liệu = 0; kiểm thêm hạn chờ 60 phút, mức độ đầy đủ và độ trễ đồng bộ của tracking, chính sách, phê duyệt và sổ cái. Kiểm kê dữ liệu thực gửi đối tác, đo độ trễ xử lý đầu-cuối và độ chính xác qua kiểm duyệt độc lập; không suy từ MockLLM rằng chất lượng và tốc độ thật đã đạt. Nếu có tín hiệu vượt trần, xử lý ngay theo runbook thay vì đợi hết tuần.

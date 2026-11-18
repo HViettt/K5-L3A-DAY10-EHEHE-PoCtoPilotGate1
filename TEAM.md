@@ -74,9 +74,17 @@ Sản phẩm và kinh doanh; mục tiêu hệ thống, viết tiêu chí chấp 
 
 CP2: soạn mục tiêu cấp hệ thống tại Phiếu A câu 1.1; hoàn thiện câu 1.6 (câu tiêu chí, hai ranh giới đầu ra, bốn câu hỏi soát, căn cứ ngưỡng kinh doanh và lịch rà soát). Điền các ngưỡng và bốn nhánh quyết định trong `config/acceptance_criteria.json`; thống nhất nội dung bản thảo giữa Phiếu A và JSON. Phần ký niêm phong và commit/push tiêu chí do Nguyễn Hoàng Việt phụ trách theo phân công.
 
+CP3: điền bản đồ dữ liệu và phân tích drift chính sách ngày 01/12/2026 ở B3; đặt bốn cổng kinh doanh ở B7.4 và mục `business` trong `config/operating_gates.json`, giải thích bằng `ops_limits`, `ops_facts`.
+
+CP5: soạn nội dung cần đo lại trong pilot thật ở dòng bắt buộc thứ ba của C12, gồm chi phí, ROI, hàng chờ, đối soát thiệt hại, độ trễ và chất lượng dữ liệu theo ngày/kho, đối chiếu ngưỡng đã ký.
+
 ### Bằng chứng
 
-`templates/form-a-criteria.md`: câu 1.1 và mục A4, câu 1.6; `config/acceptance_criteria.json`: `required`, `nice_to_have`, `business_ops`, `stop_condition`, `decision_rule`. Chưa có mã commit cho thay đổi CP2 này; bổ sung sau khi commit. Chưa có mã lần chạy vì CP2 phải chốt và ký tiêu chí trước khi đánh giá.
+CP2: commit `2e562ee` — phần câu 1.1 và A4 trong `templates/form-a-criteria.md`, các ngưỡng và quy tắc trong `config/acceptance_criteria.json`. Bản tiêu chí được niêm phong ở commit `ac142e5` — `Sign acceptance criteria`.
+
+CP3: `templates/form-b-evaluation-gates.md` mục B3, B7.4; `config/operating_gates.json` mục `business`. Căn cứ: `data/world.json` mục `policies`, `orders[].parcels`, `ops_limits`, `ops_facts` và cách chọn chính sách trong `lab10/helpers.py`, `lab10/agent.py`.
+
+CP5: `templates/form-c-incident.md` mục C12, dòng bắt buộc thứ ba.
 
 ### Exit ticket
 
