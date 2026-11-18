@@ -1,0 +1,5 @@
+* text=auto eol=lf
+config/acceptance_criteria.json text eol=crlf
+config/acceptance_criteria.lock text eol=crlf
+submission/config/acceptance_criteria.json text eol=crlf
+submission/config/acceptance_criteria.lock text eol=crlf

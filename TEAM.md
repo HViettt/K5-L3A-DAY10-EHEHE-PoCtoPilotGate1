@@ -5,7 +5,7 @@
 - Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): EHEHE
 - Lớp: `L3A`
 - Repo của bàn: `K5-L3A-DAY10-EHEHE-PoCtoPilotGate1`
-- Thẻ sự cố đã bốc (S1–S8):
+- Thẻ sự cố đã bốc (S1–S8): `S7`
 
 ## Thành viên
 
@@ -96,13 +96,14 @@ CP2: commit `2e562ee` — phần câu 1.1 và A4 trong `templates/form-a-criteri
 
 CP3: `templates/form-b-evaluation-gates.md` mục B3, B7.4; `config/operating_gates.json` mục `business`. Căn cứ: `data/world.json` mục `policies`, `orders[].parcels`, `ops_limits`, `ops_facts` và cách chọn chính sách trong `lab10/helpers.py`, `lab10/agent.py`.
 
-CP4: `incidents/S7/card.md`, `tickets.jsonl`, `world_patch.json`; `templates/form-c-incident.md` mục C5. Trace mốc `after`: `S7-01@11` có `customer_note`, `S7-20@11` có `recipient_contact`, cả hai báo `no_pii_to_carrier = False`; `S7-05@11` đạt và hoàn đúng 18.000đ.
+CP4: `incidents/S7/card.md`, `tickets.jsonl`, `world_patch.json`; `templates/form-c-incident.md` mục C5. Trace trước khi sửa S7 (mốc `base`/`prepared`): `S7-01@11` có `customer_note`, `S7-20@11` có `recipient_contact`, cả hai báo `no_pii_to_carrier = False`; sau khi sửa S7 (mốc `after`), payload `notify_carrier` chỉ giữ đúng 4 trường hợp đồng (`order_id`, `parcel_id`, `district`, `delay_days`) và đạt `no_pii_to_carrier = True`; `S7-05@11` đạt và hoàn đúng 18.000đ.
 
 CP5: `templates/form-c-incident.md` mục C12, ba dòng bắt buộc; `submission/submission.json` mục `three_lines`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** Quyền sử dụng dữ liệu cá nhân của người nhận quà (bên thứ ba không ký thỏa thuận với hệ thống) không thể suy diễn từ việc người mua nhập vào đơn hàng; kênh tích hợp đối tác bắt buộc phải tuân thủ đặc tả whitelist các trường dữ liệu tối thiểu thay vì truyền nguyên văn dữ liệu phi cấu trúc.
+- **Một điều còn chưa chắc:** Trong triển khai pilot thật, chi phí nhân sự phân bổ và tỉ lệ chuyển người ở các phân khúc đơn thiếu mã kho (`kho ?`) có làm vượt trần 5.000đ/ticket khi lưu lượng thực tế biến động theo mùa vụ hay không.
 
 ---
 

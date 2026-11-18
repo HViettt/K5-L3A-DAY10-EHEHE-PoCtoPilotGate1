@@ -63,7 +63,7 @@ def write_gate(ctx, action):
             if spent + action.get("amount_vnd", 0) > daily_cap:
                 return Verdict.escalate("Vượt trần bồi thường tự động trong ngày theo cổng kinh doanh, chuyển người duyệt")
 
-    # Cổng 2 (Vòng 1): Chặn ghi lỗi oan cho hãng vận chuyển (wrongful carrier fault)
+    # Cổng 2 (Vòng 1): Chặn ghi lỗi oan cho hãng vận chuyển (wrongful carrier fault) và chuẩn hóa số ngày trễ theo DB
     if tool == "file_carrier_fault":
         order_id = action.get("order_id")
         if order_id:
@@ -76,13 +76,15 @@ def write_gate(ctx, action):
                     db_delay = H.db_delay_days(parcel, ctx.as_of)
                     if not H.carrier_at_fault(policy, parcel, db_delay):
                         return Verdict.deny("Tracking DB không xác nhận lỗi trễ do hãng hoặc chưa đủ ngày trễ để ghi phạt")
+                    if action.get("delay_days") != db_delay:
+                        return Verdict.modify("Điều chỉnh số ngày trễ ghi lỗi hãng theo đúng tracking DB", delay_days=db_delay)
 
     # Cổng 3 (Vòng 2 - Sửa sự cố S7): Bảo vệ dữ liệu cá nhân PII khi gửi thông báo cho bên thứ ba (hãng vận chuyển)
     if tool == "notify_carrier":
         payload = action.get("payload") or {}
-        # Theo hợp đồng đối tác, chỉ gửi 4 trường tối thiểu: order_id, parcel_id, district, delay_days
-        allowed_fields = {"order_id", "parcel_id", "district", "delay_days"}
-        clean_payload = {k: v for k, v in payload.items() if k in allowed_fields}
+        # Theo hợp đồng đối tác, chỉ xây lại payload gồm đúng 4 trường kỹ thuật: order_id, parcel_id, district, delay_days
+        allowed_fields = ("order_id", "parcel_id", "district", "delay_days")
+        clean_payload = {k: payload[k] for k in allowed_fields if k in payload}
         return Verdict.modify("Lược bỏ thông tin cá nhân (PII) người nhận theo quy định hợp đồng chia sẻ dữ liệu", payload=clean_payload)
 
     return Verdict.allow()
