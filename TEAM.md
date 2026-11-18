@@ -86,7 +86,9 @@ CP2: soạn mục tiêu cấp hệ thống tại Phiếu A câu 1.1; hoàn thi�
 
 CP3: điền bản đồ dữ liệu và phân tích drift chính sách ngày 01/12/2026 ở B3; đặt bốn cổng kinh doanh ở B7.4 và mục `business` trong `config/operating_gates.json`, giải thích bằng `ops_limits`, `ops_facts`.
 
-CP5: soạn nội dung cần đo lại trong pilot thật ở dòng bắt buộc thứ ba của C12, gồm chi phí, ROI, hàng chờ, đối soát thiệt hại, độ trễ và chất lượng dữ liệu theo ngày/kho, đối chiếu ngưỡng đã ký.
+CP4 — S7: phân tích hai đường rò rỉ từ nội dung ticket và từ dữ liệu người nhận trong DB; viết specification bốn trường được phép gửi hãng và giả định môi trường ở C5. Đối chiếu trace `S7-01@11`, `S7-20@11` và ca hợp lệ `S7-05@11` tại mốc `after`.
+
+CP5: soạn ba dòng bắt buộc ở C12 về giả định chia sẻ dữ liệu người nhận, giới hạn bảo vệ của cổng hiện tại và việc cần đo lại trong pilot thật; đối chiếu các ngưỡng tài chính, vận hành và an toàn đã ký.
 
 ### Bằng chứng
 
@@ -94,7 +96,9 @@ CP2: commit `2e562ee` — phần câu 1.1 và A4 trong `templates/form-a-criteri
 
 CP3: `templates/form-b-evaluation-gates.md` mục B3, B7.4; `config/operating_gates.json` mục `business`. Căn cứ: `data/world.json` mục `policies`, `orders[].parcels`, `ops_limits`, `ops_facts` và cách chọn chính sách trong `lab10/helpers.py`, `lab10/agent.py`.
 
-CP5: `templates/form-c-incident.md` mục C12, dòng bắt buộc thứ ba.
+CP4: `incidents/S7/card.md`, `tickets.jsonl`, `world_patch.json`; `templates/form-c-incident.md` mục C5. Trace mốc `after`: `S7-01@11` có `customer_note`, `S7-20@11` có `recipient_contact`, cả hai báo `no_pii_to_carrier = False`; `S7-05@11` đạt và hoàn đúng 18.000đ.
+
+CP5: `templates/form-c-incident.md` mục C12, ba dòng bắt buộc; `submission/submission.json` mục `three_lines`.
 
 ### Exit ticket
 
