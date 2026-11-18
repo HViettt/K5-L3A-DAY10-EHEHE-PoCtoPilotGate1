@@ -16,7 +16,7 @@
       "Khi có từ 1 lỗi ghi oan cho hãng vận chuyển hoặc tổng tiền hoàn sai vượt 0đ",
       "Khi phát hiện rò rỉ dữ liệu cá nhân (PII) sang bên thứ ba"
     ],
-    "alert_channel": "ops-refund-alerts",
+    "alert_channel": "#logix-refund-pilot-alert",
     "decision_note": true,
     "review_sampling_pct": 0
   },
