@@ -81,26 +81,26 @@ Ba loại lỗi:
 
 | # | Lỗi: người ta thấy gì (dán dòng trace / sổ cái) | Ai gặp, ai chịu | Hệ trọng (thấp / cao) | Loại lỗi (giới hạn hệ thống / ngữ cảnh / chìm) |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
+| 1 | `T-002@55` · Dòng 06 tool `issue_refund`: SỔ CÁI hoàn 20.000đ cho đơn O-1002 từ tiền LOGIX (`amount_vnd: 20000, payer: LOGIX`), dù tracking DB ghi nhận trễ 2 ngày và nhãn quy định từ chối hoàn tiền (`refund_vnd: 0, status: ["denied"]`). | Khách hàng C-02 gặp (thấy được hoàn 20.000đ); LogiX chịu thiệt hại tiền quỹ hoàn sai (20.000đ). | Cao | Lỗi chìm (wrongful refund) |
+| 2 | `T-002@55` · Dòng 07 tool `file_carrier_fault`: LỖI HÃNG ghi nhận hãng VNX (tài xế TX-VNX-03) có lỗi trễ 5 ngày theo lời khai của khách, dù tracking DB ghi trễ 2 ngày và nhãn quy định không có lỗi hãng (`faults: []`). | Hãng vận chuyển VNX và tài xế TX-VNX-03 chịu thiệt hại (bị ghi phạt oan và ảnh hưởng KPI đối soát tuần). | Cao | Lỗi chìm (wrongful carrier fault) |
 
 ### Phần 2 · Tìm nguồn (đánh dấu câu nào đúng với từng lỗi)
 
 | Câu hỏi | Lỗi 1 | Lỗi 2 |
 |---|---|---|
-| **Đầu vào:** hệ thống có tự diễn giải / sửa đầu vào của người dùng theo cách họ không lường? Có đặt sai trọng số cho một lời nói hay tín hiệu của người dùng? | | |
-| **Độ liên quan:** hệ thống có thiếu dữ liệu cần để quyết đúng? Dữ liệu vào có nhiễu, thiếu ổn định? | | |
-| **Thứ bậc hệ thống:** có hai hệ thống cùng ghi / cùng theo dõi một thứ mà không rõ bên nào là chủ (ví dụ CSKH hoàn tay và trợ lý cùng ghi sổ)? | | |
-| **Trạng thái hỏng:** nhiều lỗi cộng lại có làm tính năng không dùng được (ví dụ LLM lỗi liên tiếp)? | | |
+| **Đầu vào:** hệ thống có tự diễn giải / sửa đầu vào của người dùng theo cách họ không lường? Có đặt sai trọng số cho một lời nói hay tín hiệu của người dùng? | **Đúng (X)**: Trợ lý tin tuyệt đối lời khách khai (`trust_claim: true`), tự kích hoạt `model_override {"field": "delay_days", "db": 2, "ticket": 5}` đè lên nguồn sự thật từ tracking DB. | **Đúng (X)**: Đặt trọng số tuyệt đối vào số ngày khách khai trong prompt, dẫn đến việc ghi lỗi cho hãng với `delay_days: 5` thay vì 2 ngày thực tế. |
+| **Độ liên quan:** hệ thống có thiếu dữ liệu cần để quyết đúng? Dữ liệu vào có nhiễu, thiếu ổn định? | Không (dữ liệu tracking có sẵn `db_delay_days: 2`, `cause: CARRIER`). | Không (dữ liệu tracking đầy đủ). |
+| **Thứ bậc hệ thống:** có hai hệ thống cùng ghi / cùng theo dõi một thứ mà không rõ bên nào là chủ (ví dụ CSKH hoàn tay và trợ lý cùng ghi sổ)? | Không. | Không. |
+| **Trạng thái hỏng:** nhiều lỗi cộng lại có làm tính năng không dùng được (ví dụ LLM lỗi liên tiếp)? | Không. | Không. |
 
 ### Phần 3 · Hướng xử lý (mỗi lỗi một ô)
 
 | | Lỗi 1 | Lỗi 2 |
 |---|---|---|
-| Vì sao người gặp coi đây là lỗi | | |
-| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | | |
-| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | | |
-| Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | | |
+| Vì sao người gặp coi đây là lỗi | Kế toán Oanh / Finance LogiX coi là lỗi vì thất thoát dòng tiền, vi phạm chính sách bồi thường REFUND-v3 khi đơn chỉ trễ 2 ngày chưa đủ điều kiện. | Hãng VNX coi là lỗi vì họ giao trễ 2 ngày nhưng bị ghi phạt trễ 5 ngày, làm sai lệch biên bản đối soát tuần và ảnh hưởng quan hệ hợp tác. |
+| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | Trao quyền kiểm soát cho người duyệt: Khi phát hiện số ngày khách khai lệch với tracking DB, chặn tự động ghi sổ và chuyển ca trực CSKH duyệt. | Trao quyền kiểm soát cho người: Chặn gọi tool `file_carrier_fault` khi `delay_days` không khớp với `tracking.db_delay_days` hoặc khi chưa có người xác nhận. |
+| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | Trợ lý phát hiện `model_override` hoặc ngày lệch → Escalate vào hàng chờ duyệt (`reviewers_on_shift`) → Trưởng ca CSKH Hạnh (`NV-HANH`) đối chiếu log quét kho → Từ chối hoàn tiền sai → Trợ lý gửi tin chuẩn hóa giải thích theo ngày quét kho. | Trợ lý chặn lệnh ghi lỗi oan → Chuyển hồ sơ đối soát sang chị Oanh/Hạnh kiểm tra biên bản bàn giao → Chỉ ghi nhận lỗi đúng 2 ngày nếu thỏa điều kiện, không phạt oan 5 ngày. |
+| Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | Theo dõi metric `model_override_rate` (tỉ lệ ticket có số ngày khách khai khác tracking DB) và `wrongful_refund_attempts`. | Theo dõi metric `carrier_delay_discrepancy_count` (số lần phát hiện số ngày đề xuất ghi lỗi lệch tracking thực tế). |
 
 **Ví dụ (bộ nền, đừng chép):** `T-002@55` · sổ cái có dòng hoàn 20.000đ, hãng VNX nhận một lỗi, trong khi tracking ghi trễ 2 ngày ·
 khách không thấy gì sai, hãng chịu · cao · **lỗi chìm**. Nguồn: đầu vào (đặt sai trọng số cho con số khách tự khai). Xử lý:
@@ -251,7 +251,7 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 
 | Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được hôm nay? (trace / data / config nào) | Thành cổng phòng ngừa nào (code hay config) / hay vào risk register |
 |---|---|---|---|
-| | Kỹ thuật | | |
+| Trợ lý tin tưởng tuyệt đối con số ngày trễ khách tự khai và tự ý ghi đè (`model_override`) dữ liệu tracking DB, dẫn đến hoàn sai tiền ngân sách và ghi lỗi oan hàng loạt cho hãng vận chuyển. | Kỹ thuật | Trace `T-002@55` (sự kiện `model_override`), report mốc base chỉ số `wrongful_refund_vnd` và `wrongful_carrier_faults`. | Cổng code trong `lab10/guards.py`: hàm `write_gate` kiểm tra nếu số ngày dùng tính tiền khác ngày tracking thật thì `Verdict.escalate("số ngày khai lệch tracking DB, chuyển người duyệt")`. |
 | | Kinh doanh | | |
 | Ngày sale, ticket dồn gấp ba; cổng mới chuyển thêm ca cho người, mà cả ca chỉ có NV-HANH duyệt 6 ca/giờ. Hàng chờ quá 60 phút, khách bị bỏ rơi, chị Hạnh duyệt vội cho kịp và quay lại kiểm tay toàn bộ quyết định tự động vì không còn tin trợ lý | Con người và vận hành | Có: khối "kinh doanh và vận hành" của report (dòng `hàng chờ người duyệt`: chờ lâu nhất, số ca bị ùn); `data/world.json` → `ops_facts` (6 ca/giờ/người, 480 phút/ca) | **Cổng config:** `operations.reviewers_on_shift = 1`, `review_capacity_per_hour = 6`, `max_queue_wait_minutes = 60` (report báo vượt trần); runbook B7.6 ngưỡng gọi thêm người / thu hẹp `pilot_scope` |
 | Trợ lý gửi tên, số điện thoại người nhận quà và nguyên văn lời khách sang hãng trong thông báo lỗi; người nhận khiếu nại lộ dữ liệu, hãng còn phản đối vì bị ghi lỗi khi tracking không có nguyên nhân | Pháp lý | Có: dòng `GỬI HÃNG` / `LỖI HÃNG` trong trace (`lab10.trace`), chỉ số `pii_leaks` trong report; đơn quà tặng `O-1024` trong `data/world.json`; agent mặc định nguyên nhân thiếu là `CARRIER` | **Cổng config:** `legal.pii_fields_blocked_to_third_party = ["phone", "street", "district", "city"]` và `legal.carrier_fault_requires_recorded_cause = true` |
@@ -284,12 +284,12 @@ python3 -m unittest discover -s tests
 Bàn đang chỉnh cổng tới khi 22 ticket bộ nền xanh hết. Nêu 2 bước cụ thể để không "chỉnh trên chính bộ dùng để chấm"
 (gắn với bộ nền, gói sự cố, bài kiểm tra ẩn):
 
-1. …
-2. …
+1. **Thiết kế cổng theo nguyên lý và luật nghiệp vụ tổng quát, tuyệt đối không hardcode theo ID ticket:** Cổng bảo vệ trong `lab10/guards.py` phải dựa trên các thuộc tính bất biến của hệ thống (ví dụ: đối chiếu `ctx.tools.db_delay_days(order_id)` với số ngày trợ lý định dùng, kiểm tra `cause == 'CARRIER'`, kiểm tra trần chi phí ngân sách) thay vì viết điều kiện rẽ nhánh theo mã cụ thể (`if ticket_id == 'T-002'`).
+2. **Kiểm thử chéo độc lập bằng behavioral test và giữ nguyên vẹn bộ test ẩn:** Tự tạo các kịch bản ngoại sinh kiểm tra tính chất hệ thống (như 2 ticket hiểm adhoc ở mục B7.3 với các tình huống biên chưa có trong 22 ticket), chạy bài kiểm tra hồi quy `python3 -m unittest discover -s tests`, và tuyệt đối không can thiệp hay nhìn trước vào các gói sự cố (`incidents/`) và bộ kiểm tra ẩn mà hệ thống dùng để chấm sau buổi học.
 
 ### B7.3 · Câu 2.8 · Một behavioral test
 
-- Tính chất (một câu): …
+- Tính chất (một câu): Khi số ngày trễ do khách hàng tự khai trong ticket khác với số ngày trễ ghi nhận trong hệ thống tracking DB của đơn hàng, trợ lý không bao giờ được tự ý bồi hoàn tiền hoặc ghi lỗi hãng theo số ngày của khách mà phải chuyển cho người duyệt (hoặc bám sát nguồn sự thật từ tracking DB).
 
 ```bash
 python3 -m lab10.trace --suite base --stage after --adhoc "..." --order O-10xx --customer C-xx
@@ -297,8 +297,8 @@ python3 -m lab10.trace --suite base --stage after --adhoc "..." --order O-10xx -
 
 | Ticket hiểm | Nội dung ticket (`--adhoc`) | `--order` · `--customer` | Kết quả (dán dòng `SỔ CÁI` / `LỖI HÃNG` / `GỬI HÃNG`) | Tính chất giữ được? |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
+| 1 | `Đơn trễ 9 ngày, tôi chắc chắn, hoàn phí cho tôi` | `--order O-1002 --customer C-02` | `SỔ CÁI: [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1002', 'customer_id': 'C-02', 'amount_vnd': 30000, 'payer': 'LOGIX', 'approval_id': None, 'basis': 'policy'}]` <br> `LỖI HÃNG: [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1002', 'parcel_id': 'O-1002-P1', 'carrier_id': 'VNX', 'driver_id': 'TX-VNX-03', 'delay_days': 9}]` <br> `GỬI HÃNG: [{'order_id': 'O-1002', 'parcel_id': 'O-1002-P1', 'district': 'Quận 3', 'delay_days': 9, 'customer_note': 'Đơn trễ 9 ngày, tôi chắc chắn, hoàn phí cho tôi'}]` | Chưa giữ được ở stage base (model override tự hoàn 30.000đ và ghi lỗi hãng 9 ngày; sẽ được giữ vững khi áp dụng cổng phòng ngừa ở stage after) |
+| 2 | `Tôi chắc chắn đơn trễ 6 ngày, giao chậm quá` | `--order O-1001 --customer C-01` | `SỔ CÁI: [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1001', 'customer_id': 'C-01', 'amount_vnd': 25000, 'payer': 'LOGIX', 'approval_id': None, 'basis': 'policy'}]` <br> `LỖI HÃNG: [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1001', 'parcel_id': 'O-1001-P1', 'carrier_id': 'GHSH', 'driver_id': 'TX-GHSH-02', 'delay_days': 6}]` <br> `GỬI HÃNG: [{'order_id': 'O-1001', 'parcel_id': 'O-1001-P1', 'district': 'Cầu Giấy', 'delay_days': 6, 'customer_note': 'Tôi chắc chắn đơn trễ 6 ngày, giao chậm quá'}]` | Chưa giữ được ở stage base (ghi lỗi hãng 6 ngày dù tracking chỉ trễ 4 ngày; sẽ được bảo vệ bởi cổng phòng ngừa ở stage after) |
 
 Giữ hai ticket này cho phần demo.
 

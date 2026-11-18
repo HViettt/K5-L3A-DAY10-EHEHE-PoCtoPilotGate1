@@ -48,19 +48,22 @@ Một điều học được, một điều còn chưa chắc.
 
 ### Phần việc phụ trách
 
-Kỹ sư cổng; phân tích trace lỗi, viết bài kiểm tra hành vi (behavioral test), thêm chỉ số theo dõi trong `lab10/monitors.py`, Phiếu A (A2-Offline, A3), Phiếu B (B2, B7.2, B7.3), Phiếu C (C2, C8).
+Kỹ sư cổng; phân tích trace lỗi, viết bài kiểm tra hành vi (behavioral test), thêm chỉ số theo dõi trong `lab10/monitors.py`, Phiếu A (A2-Offline, A3), Phiếu B (B2, B6-Kỹ thuật, B7.2, B7.3), Phiếu C (C2, C8).
 
 ### Đóng góp cụ thể
 
-...
+- **Phiếu A:** Hoàn thành thiết kế Offline Metric cho bước `file_carrier_fault` (câu 1.3 mục A2) với đầy đủ 3 ô Thước đo / Dữ liệu / Cách tính và điểm mù thực tế; Đọc và phân tích kết quả thống kê có khoảng tin cậy 95% bootstrap (câu 1.5 mục A3).
+- **Phiếu B:** Dò trace `T-002@55`, lập bảng soát lỗi chi tiết cho 2 lỗi chìm (hoàn tiền sai và phạt oan hãng vận chuyển), chỉ ra nguồn gốc tầng Đầu vào do `model_override` và đề xuất hướng xử lý trao quyền kiểm soát cho người duyệt (câu 2.2 mục B2); Đóng góp lý do thất bại lăng kính Kỹ thuật trong Pre-mortem 4 lăng kính (câu 2.5 mục B6); Nêu 2 bước cụ thể ngăn ngừa rò rỉ dữ liệu trong kiểm thử cổng (câu 2.7 mục B7.2); Phát biểu tính chất bất biến và thiết kế 2 ticket hiểm chạy trace adhoc kiểm thử hành vi (câu 2.8 mục B7.3).
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `23c8760` (Phiếu A: hoàn thành câu 1.3 và 1.5) và commit hoàn thành Phiếu B.
+- File & mục trong phiếu: `templates/form-a-criteria.md` (mục A2 cột Offline, mục A3); `templates/form-b-evaluation-gates.md` (mục B2, B6, B7.2, B7.3).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** Khi model tin tưởng tuyệt đối vào lời khách khai (`trust_claim: true`) và kích hoạt `model_override`, hệ thống sẽ gây ra các lỗi chìm (silent failures) rất nguy hiểm: vừa làm thất thoát quỹ bồi hoàn vừa phạt oan đối tác vận chuyển mà không hề phát sinh lỗi runtime.
+- **Một điều còn chưa chắc:** Khi đặt cổng escalate mọi ca có ngày khách khai lệch tracking DB sang người duyệt, liệu dung lượng ca trực (`review_capacity_per_hour = 6`) có bị quá tải trong giờ cao điểm hay không.
 
 ---
 
