@@ -1,12 +1,17 @@
 {
-  "team": "",
-  "members": [],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "team": "K5-L3A-DAY10-EHEHE-PoCtoPilotGate1",
+  "members": [
+    "Nguyễn Hoàng Việt-2A202603487",
+    "Đỗ Hoàng Minh-2A202603507",
+    "Nguyễn Lâm Hoàng-2A202603448",
+    "Đoàn Gia Long-2A202603443"
+  ],
+  "incident": "S7",
+  "decision_v1": "Tiếp tục",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Khách hàng có thể nhập số điện thoại hoặc địa chỉ người nhận quà vào ô ghi chú tự do của đơn hàng.",
+    "reduce_or_prevent": "Cổng của đội thực sự NGĂN được tác hại vì áp dụng cơ chế whitelist cứng các trường payload gửi hãng tại write_gate chỉ cho phép order_id, parcel_id, district, delay_days và loại bỏ mọi trường khác.",
+    "measure_in_pilot": "Trong tuần đầu pilot có giám sát, đo theo từng ngày và từng kho tổng chi phí xử lý/ticket (tiền máy thực trả, thời gian duyệt/kiểm lại và phí nhân sự phân bổ), ROI có tính tiền hoàn sai, tỉ lệ chuyển người và lượng ca cần duyệt trong giờ cao điểm; đối soát toàn bộ khoản hoàn và lỗi hãng với sổ kế toán/tracking, ghi nhận phản hồi của khách, hãng và người duyệt. So với các ngưỡng đã ký: chi phí <= 5.000đ/ticket, ROI >= 0,20, ca ùn = 0, hoàn sai/lỗi hãng oan/lộ dữ liệu = 0; kiểm thêm hạn chờ 60 phút, mức độ đầy đủ và độ trễ đồng bộ của tracking, chính sách, phê duyệt và sổ cái. Kiểm kê dữ liệu thực gửi đối tác, đo độ trễ xử lý đầu-cuối và độ chính xác qua kiểm duyệt độc lập; không suy từ MockLLM rằng chất lượng và tốc độ thật đã đạt. Nếu có tín hiệu vượt trần, xử lý ngay theo runbook thay vì đợi hết tuần."
   }
 }
