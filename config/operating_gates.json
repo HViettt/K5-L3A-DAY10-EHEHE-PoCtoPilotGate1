@@ -12,9 +12,12 @@
     "reviewers_on_shift": 1,
     "review_capacity_per_hour": 6,
     "max_queue_wait_minutes": 60,
-    "stop_conditions": ["Khi có 1 lỗi ghi oan cho hãng vận chuyển", "Khi tổng tiền hoàn sai vượt 0đ"],
+    "stop_conditions": [
+      "Khi có từ 1 lỗi ghi oan cho hãng vận chuyển hoặc tổng tiền hoàn sai vượt 0đ",
+      "Khi phát hiện rò rỉ dữ liệu cá nhân (PII) sang bên thứ ba"
+    ],
     "alert_channel": "#logix-refund-pilot-alert",
-    "decision_note": false,
+    "decision_note": true,
     "review_sampling_pct": 0
   },
   "legal": {
