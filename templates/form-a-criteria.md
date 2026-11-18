@@ -24,8 +24,8 @@ rồi mới chạy đánh giá. Khối 1 không sửa code.
 
 ### Câu 1.2 · Mục tiêu nhìn từ hai người
 
-- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): …
-- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): …
+- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): sổ đối soát tuần khớp với hãng và shop mà không phải sửa tay: 0đ hoàn sai và 0 lỗi ghi oan cho hãng; mọi lỗi ghi cho hãng đều có nguyên nhân trong tracking để chị đối chiếu được.
+- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): ca trợ lý chuyển sang không vượt sức duyệt của ca trực (6 ca/giờ/người): tỉ lệ chuyển ≤ 35%, không ca nào chờ quá 60 phút, 0 ca bị ùn; và chị đủ tin để chỉ kiểm mẫu (≥ 10%) thay vì kiểm lại tất cả, vì mỗi quyết định tự động có ghi chú giải thích và người duyệt đứng tên là chị (NV-HANH).
 
 ---
 
@@ -48,12 +48,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
-| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Bước / hành vi được đo** | | Thao tác ghi `file_carrier_fault`: trợ lý tự ghi lỗi cho hãng vận chuyển |
+| **Thước đo** (một câu, có đơn vị) | | Tỉ lệ lỗi tự động ghi cho hãng bị hãng khiếu nại (%), theo khung 24h và cộng dồn 7 ngày |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | Log `file_carrier_fault` của trợ lý (mã lỗi, hãng, đơn, nguyên nhân ghi trong tracking); log khiếu nại từ API/portal đối soát của hãng; sổ đối soát tuần của chị Oanh (NV-OANH). Production không có nhãn: dùng **khiếu nại của hãng** làm tín hiệu thay nhãn; chị Oanh xác nhận khiếu nại nào đúng là ghi oan |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | Số lỗi tự động bị hãng khiếu nại / tổng số lỗi trợ lý tự động ghi cho hãng, trong cùng khung thời gian. Lỗi chưa hết hạn khiếu nại của hãng chưa tính vào mẫu số, đếm riêng là "đang chờ". Mẫu số = 0 thì ghi "không có dữ liệu", không ghi 0% |
+| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | Tính lại mỗi 24h và cộng dồn 7 ngày. **Vàng:** có 1 khiếu nại chưa xác nhận → báo kênh `alert_channel`, chị Oanh kiểm trong ngày. **Đỏ:** ≥ 1 khiếu nại được xác nhận là ghi oan, hoặc ≥ 2 khiếu nại từ cùng một hãng trong 24h → tắt `file_carrier_fault` theo điều kiện dừng đã ký; NV-TUNG (giữ công tắc) bấm tắt |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | | Có độ trễ: hãng khiếu nại sau vài ngày nên không thấy ngay theo thời gian thực; không thấy lỗi ghi oan mà hãng bỏ qua không khiếu nại; không thấy tác hại tới khách và shop (hoàn sai, lộ dữ liệu cá nhân) |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
