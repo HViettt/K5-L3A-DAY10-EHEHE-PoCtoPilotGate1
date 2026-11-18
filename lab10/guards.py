@@ -26,10 +26,8 @@ ctx.tools    tra cứu nguồn sự thật: lookup_order, lookup_policies, looku
 ctx.gates    config cổng của bàn (config/operating_gates.json), chỉ đọc;  ctx.cost_vnd = tiền LLM đã tốn cho ticket này
 ctx.events   trace tới thời điểm này;  ctx.log("ten_su_kien", ...) ghi thêm sự kiện guard vào trace
 lab10.helpers: db_delay_days, ticket_parcel, effective_policy, entitlement_vnd, carrier_at_fault, digits
-
-Mặc định dưới đây cho qua tất cả (= mốc base).
 """
-from . import helpers as H  # noqa: F401
+from . import helpers as H
 from .tools import Verdict
 
 
@@ -38,5 +36,45 @@ def pre_guard(ctx):
 
 
 def write_gate(ctx, action):
-    # action = {"tool": "issue_refund", "ticket_id":..., "order_id":..., "amount_vnd":..., "payer":..., ...}
+    tool = action.get("tool")
+
+    # Cổng 1: Chặn bồi thường sai (wrongful refund) bằng cách đối chiếu quyền lợi tính từ tracking DB và chính sách
+    if tool == "issue_refund":
+        order_id = action.get("order_id")
+        if order_id:
+            order = ctx.tools.lookup_order(order_id)
+            if order:
+                parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+                policies = ctx.tools.lookup_policies()
+                policy = H.effective_policy(policies, ctx.as_of)
+                if policy:
+                    db_delay = H.db_delay_days(parcel, ctx.as_of)
+                    entitled = H.entitlement_vnd(policy, order, db_delay, parcel.get("delay_cause"))
+                    if action.get("amount_vnd", 0) > entitled:
+                        if entitled == 0:
+                            return Verdict.deny("Tracking DB ghi nhận đơn chưa đủ ngày trễ để hoàn phí theo chính sách")
+                        else:
+                            return Verdict.modify("Điều chỉnh số tiền hoàn về đúng mức được hưởng theo tracking DB", amount_vnd=entitled)
+
+        # Cổng kinh doanh: Trần ngân sách hoàn tiền tự động trong ngày
+        daily_cap = (ctx.gates or {}).get("business", {}).get("daily_refund_cap_vnd")
+        if daily_cap is not None:
+            spent = ctx.tools.auto_refund_today_vnd()
+            if spent + action.get("amount_vnd", 0) > daily_cap:
+                return Verdict.escalate("Vượt trần bồi thường tự động trong ngày theo cổng kinh doanh, chuyển người duyệt")
+
+    # Cổng 2: Chặn ghi lỗi oan cho hãng vận chuyển (wrongful carrier fault)
+    if tool == "file_carrier_fault":
+        order_id = action.get("order_id")
+        if order_id:
+            order = ctx.tools.lookup_order(order_id)
+            if order:
+                parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+                policies = ctx.tools.lookup_policies()
+                policy = H.effective_policy(policies, ctx.as_of)
+                if policy:
+                    db_delay = H.db_delay_days(parcel, ctx.as_of)
+                    if not H.carrier_at_fault(policy, parcel, db_delay):
+                        return Verdict.deny("Tracking DB không xác nhận lỗi trễ do hãng hoặc chưa đủ ngày trễ để ghi phạt")
+
     return Verdict.allow()
