@@ -32,15 +32,22 @@ Kỹ sư cổng (Lead); quản lý repo, chạy các lệnh chính, code cổng 
 
 ### Đóng góp cụ thể
 
-...
+- **CP1:** Khởi tạo repository, cấu hình remotes (`origin`, `upstream`), chạy và xác minh 13 unit tests ban đầu.
+- **CP2:** Kiểm tra xác thực hash Bản tiêu chí chấp nhận `fc643207ba4b`, niêm phong và ký commit `ac142e5` (`Sign acceptance criteria`), điền Phiếu A câu A5.
+- **CP3:** Chạy baseline eval `R-base-before-20261118-154707-bde05c`, phân tích thất bại do model ghi đè ở ticket `T-002@55`. Lập trình các cổng an toàn trong `lab10/guards.py` (`write_gate` đối chiếu `db_delay_days`, ép số tiền theo `entitlement_vnd`, chặn ghi lỗi oan hãng vận chuyển và khống chế trần hoàn tiền ngày). Đạt 100% pass_rate ở lần chạy `R-base-after-20261118-154750-9b3d65`. Thực hiện chốt snapshot cổng vòng 1 (`python -m lab10.checkpoint` in hash `2d6a4b19`). Chạy mốc prepared `R-base-prepared-20261118-163056-616d15`. Hoàn thành mục B0, B1, B7.1 và đồng ký quyết định Gate 1 v1 ở mục B8 trong Phiếu B.
+- **CP4 & CP5:** Triển khai cổng phòng ngừa sự cố S7 ở `write_gate` (whitelist 4 trường payload gửi hãng `order_id`, `parcel_id`, `district`, `delay_days`), triệt tiêu 30 ca PII leaks về 0 (`R-S7-after-20261118-163818-42c6e2`). Hoàn thiện mục C7 trong Phiếu C và đồng ký quyết định Gate 1 v2 ở mục C12.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `ac142e5` (Sign acceptance criteria), `2734717` (chốt snapshot cổng vòng 1 và S7 guards).
+- Hash chốt vòng 1: `2d6a4b19`
+- Mã lần chạy: `R-base-before-20261118-154707-bde05c`, `R-base-after-20261118-154750-9b3d65`, `R-base-prepared-20261118-163056-616d15`, `R-S7-after-20261118-163818-42c6e2`.
+- File & mục trong phiếu: `lab10/guards.py`, `lab10/guards_round1.py`, `templates/form-b-evaluation-gates.md` (mục B0, B1, B7.1, B8), `templates/form-c-incident.md` (mục C7, C12).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** Khi xây dựng AI Agent trong môi trường doanh nghiệp có rủi ro tài chính và pháp lý, tuyệt đối không được để model tự do gọi API ghi đè hoặc chuyển tiếp dữ liệu phi cấu trúc, mà bắt buộc phải thiết lập các Cổng kiểm soát ghi (write gates) cứng rắn với whitelist và kiểm tra chéo nguồn sự thật (Ground Truth) từ Database.
+- **Một điều còn chưa chắc:** Việc loại bỏ hoàn toàn trường ghi chú tự do `customer_note` khi gửi thông báo cho hãng vận chuyển có thể làm thiếu các chỉ dẫn giao nhận đặc biệt hợp lệ của khách hàng đối với các đơn hàng phức tạp.
 
 ---
 
