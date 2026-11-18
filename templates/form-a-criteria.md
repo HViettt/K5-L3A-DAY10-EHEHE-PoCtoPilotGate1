@@ -48,12 +48,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | Thao tác ghi `file_carrier_fault`: trợ lý tự ghi lỗi cho hãng vận chuyển |
-| **Thước đo** (một câu, có đơn vị) | | Tỉ lệ lỗi tự động ghi cho hãng bị hãng khiếu nại (%), theo khung 24h và cộng dồn 7 ngày |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | Log `file_carrier_fault` của trợ lý (mã lỗi, hãng, đơn, nguyên nhân ghi trong tracking); log khiếu nại từ API/portal đối soát của hãng; sổ đối soát tuần của chị Oanh (NV-OANH). Production không có nhãn: dùng **khiếu nại của hãng** làm tín hiệu thay nhãn; chị Oanh xác nhận khiếu nại nào đúng là ghi oan |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | Số lỗi tự động bị hãng khiếu nại / tổng số lỗi trợ lý tự động ghi cho hãng, trong cùng khung thời gian. Lỗi chưa hết hạn khiếu nại của hãng chưa tính vào mẫu số, đếm riêng là "đang chờ". Mẫu số = 0 thì ghi "không có dữ liệu", không ghi 0% |
+| **Bước / hành vi được đo** | Ghi lỗi cho hãng vận chuyển (`file_carrier_fault`) | Thao tác ghi `file_carrier_fault`: trợ lý tự ghi lỗi cho hãng vận chuyển |
+| **Thước đo** (một câu, có đơn vị) | Tỉ lệ ghi lỗi hãng chính xác (Accuracy / Precision Rate, đơn vị: %) | Tỉ lệ lỗi tự động ghi cho hãng bị hãng khiếu nại (%), theo khung 24h và cộng dồn 7 ngày |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | Trace sự kiện `file_carrier_fault` trong runs đối chiếu với nhãn ground truth `delay_cause == 'CARRIER'` trong `data/world.json` trên tập 22 ticket × 5 seed (110 lần chạy) | Log `file_carrier_fault` của trợ lý (mã lỗi, hãng, đơn, nguyên nhân ghi trong tracking); log khiếu nại từ API/portal đối soát của hãng; sổ đối soát tuần của chị Oanh (NV-OANH). Production không có nhãn: dùng **khiếu nại của hãng** làm tín hiệu thay nhãn; chị Oanh xác nhận khiếu nại nào đúng là ghi oan |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Số lần gọi tool đúng khi có lỗi hãng thật / Tổng số lần gọi tool `file_carrier_fault`. Ca không gọi tool bị loại khỏi mẫu số | Số lỗi tự động bị hãng khiếu nại / tổng số lỗi trợ lý tự động ghi cho hãng, trong cùng khung thời gian. Lỗi chưa hết hạn khiếu nại của hãng chưa tính vào mẫu số, đếm riêng là "đang chờ". Mẫu số = 0 thì ghi "không có dữ liệu", không ghi 0% |
 | **Khung thời gian / ngưỡng báo động** | (không áp dụng) | Tính lại mỗi 24h và cộng dồn 7 ngày. **Vàng:** có 1 khiếu nại chưa xác nhận → báo kênh `alert_channel`, chị Oanh kiểm trong ngày. **Đỏ:** ≥ 1 khiếu nại được xác nhận là ghi oan, hoặc ≥ 2 khiếu nại từ cùng một hãng trong 24h → tắt `file_carrier_fault` theo điều kiện dừng đã ký; NV-TUNG (giữ công tắc) bấm tắt |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | Có độ trễ: hãng khiếu nại sau vài ngày nên không thấy ngay theo thời gian thực; không thấy lỗi ghi oan mà hãng bỏ qua không khiếu nại; không thấy tác hại tới khách và shop (hoàn sai, lộ dữ liệu cá nhân) |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | Bỏ sót trường hợp tài xế tự thỏa thuận dời giờ giao với khách nhưng không cập nhật lên app/hệ thống tracking | Có độ trễ: hãng khiếu nại sau vài ngày nên không thấy ngay theo thời gian thực; không thấy lỗi ghi oan mà hãng bỏ qua không khiếu nại; không thấy tác hại tới khách và shop (hoàn sai, lộ dữ liệu cá nhân) |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
@@ -71,9 +71,9 @@ nhau chia cho số lần chạy có sự kiện `proposal`; lần chạy không 
 
 ### Câu 1.5 · Chọn MỘT kết luận và giải thích một câu
 
-Số minh hoạ trong đề (không phải số của bàn). Khoanh: **(a) · (b) · (c) · (d)**
+Khoanh: **(b)**
 
-Giải thích một câu: …
+Giải thích: Khoảng tin cậy 95% của bản X [0.9400; 1.0] bao trùm kết quả 1.0 của bản Y, chênh lệch 1 lần chạy chưa đủ ý nghĩa thống kê để khẳng định Y tốt hơn X.
 
 ---
 
