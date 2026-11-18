@@ -72,11 +72,11 @@ Sản phẩm và kinh doanh; mục tiêu hệ thống, viết tiêu chí chấp 
 
 ### Đóng góp cụ thể
 
-...
+CP2: soạn mục tiêu cấp hệ thống tại Phiếu A câu 1.1; hoàn thiện câu 1.6 (câu tiêu chí, hai ranh giới đầu ra, bốn câu hỏi soát, căn cứ ngưỡng kinh doanh và lịch rà soát). Điền `config/acceptance_criteria.json`, gồm thông tin người ký, ngưỡng và bốn nhánh quyết định; thống nhất nội dung bản thảo giữa Phiếu A và JSON. Chưa thực hiện ký niêm phong hoặc chạy đánh giá. Có sử dụng Codex để hỗ trợ soạn thảo, đối chiếu PRD/eval card Lab 9 và dữ liệu `ops_limits`, `ops_facts`, kiểm tra JSON và tính nhất quán của ngưỡng.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+`templates/form-a-criteria.md`: câu 1.1 và mục A4, câu 1.6; `config/acceptance_criteria.json`: `required`, `nice_to_have`, `business_ops`, `stop_condition`, `decision_rule`. Chưa có mã commit cho thay đổi CP2 này; bổ sung sau khi commit. Chưa có mã lần chạy vì CP2 phải chốt và ký tiêu chí trước khi đánh giá.
 
 ### Exit ticket
 
