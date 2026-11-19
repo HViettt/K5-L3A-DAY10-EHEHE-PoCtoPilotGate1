@@ -1,17 +1,17 @@
-# Tự kiểm tra sự cố S7 · FAIL
+# Tự kiểm tra sự cố S7 · PASS-VISIBLE (chưa chạy test ẩn)
 
 *Đây là kết quả TỰ KIỂM TRA của bàn, không phải điểm. Bài được một team chấm tự động chấm lại sau buổi học.*
 
-- Mã lần chạy: `R-S7-grade-20261118-174131-207d7a` · bàn: `K5-L3A-DAY10-EHEHE-PoCtoPilotGate1` · grader `lab10-1.0` · 0.54s
-- Ba mốc: base `R-S7-before-20261118-174132-207d7a` · prepared `R-S7-prepared-20261118-174132-207d7a` · after `R-S7-after-20261118-174132-207d7a` (report + trace trong runs/)
+- Mã lần chạy: `R-S7-grade-20261119-091427-75ca63` · bàn: `K5-L3A-DAY10-EHEHE-PoCtoPilotGate1` · grader `lab10-1.0` · 0.415s
+- Ba mốc: base `R-S7-before-20261119-091427-75ca63` · prepared `R-S7-prepared-20261119-091427-75ca63` · after `R-S7-after-20261119-091427-75ca63` (report + trace trong runs/)
 - Mốc prepared (cổng vòng 1): đã chốt `2d6a4b19`, còn nguyên
-- Hash code đội (guards + monitors + switches + cổng vận hành): `207d7a3fcfa2`
+- Hash code đội (guards + monitors + switches + cổng vận hành): `75ca636f2a32`
 - Hash Bản tiêu chí chấp nhận: `fc643207ba4b` · đã ký: `fc643207ba4b` · KHÔNG ĐỔI
 - Thẻ đang kiểm: `S7` · dòng "Thẻ đã bốc" bàn ghi trong phiếu: S7 · khớp
 
 | Kiểm | Kết quả | Chi tiết |
 |---|---|---|
-| 1 integrity | ❌ | file khoá bị đổi: ['incidents/S1/card.json', 'incidents/S1/card.md', 'incidents/S1/tickets.jsonl', 'incidents/S1/world_patch.json', 'incidents/S2/card.json', 'incidents/S2/card.md', 'incidents/S2/tickets.jsonl', 'incidents/S2/world_patch.json', 'incidents/S3/card.json', 'incidents/S3/card.md', 'incidents/S3/tickets.jsonl', 'incidents/S3/world_patch.json', 'incidents/S4/card.json', 'incidents/S4/card.md', 'incidents/S4/tickets.jsonl', 'incidents/S4/world_patch.json', 'incidents/S5/card.json', 'incidents/S5/card.md', 'incidents/S5/tickets.jsonl', 'incidents/S5/world_patch.json', 'incidents/S6/card.json', 'incidents/S6/card.md', 'incidents/S6/tickets.jsonl', 'incidents/S6/world_patch.json', 'incidents/S8/card.json', 'incidents/S8/card.md', 'incidents/S8/tickets.jsonl', 'incidents/S8/world_patch.json'] |
+| 1 integrity | ✅ | file khoá bị đổi: không |
 | 2 criteria | ✅ | đã ký, còn nguyên |
 | 3 visible | ✅ | base có vấn đề: True; after sạch: True; ticket còn hỏng: không; trần còn vượt: không |
 | 4 hidden | — | máy này không có bài kiểm tra ẩn (team chấm sẽ chạy sau buổi học) |
